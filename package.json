@@ -1,0 +1,48 @@
+{
+  "name": "pebble-vertin-c",
+  "author": "Tony Atkins",
+  "version": "1.0.0",
+  "keywords": ["pebble-app"],
+  "private": true,
+  "dependencies": {},
+  "pebble": {
+    "displayName": "Vertin",
+    "uuid": "4d2e8208-e04f-4c0a-9d8f-a9809d6eb8fd",
+    "sdkVersion": "3",
+    "enableMultiJS": true,
+    "targetPlatforms": [
+      "aplite",
+      "basalt",
+      "chalk",
+      "diorite"
+    ],
+    "watchapp": {
+      "watchface": true
+    },
+    "messageKeys": [],
+    "resources": {
+      "media": [
+        { "type": "png", "name": "IMAGE_0_B", "file": "images/black/0.png" },
+        { "type": "png", "name": "IMAGE_1_B", "file": "images/black/1.png" },
+        { "type": "png", "name": "IMAGE_2_B", "file": "images/black/2.png" },
+        { "type": "png", "name": "IMAGE_3_B", "file": "images/black/3.png" },
+        { "type": "png", "name": "IMAGE_4_B", "file": "images/black/4.png" },
+        { "type": "png", "name": "IMAGE_5_B", "file": "images/black/5.png" },
+        { "type": "png", "name": "IMAGE_6_B", "file": "images/black/6.png" },
+        { "type": "png", "name": "IMAGE_7_B", "file": "images/black/7.png" },
+        { "type": "png", "name": "IMAGE_8_B", "file": "images/black/8.png" },
+        { "type": "png", "name": "IMAGE_9_B", "file": "images/black/9.png" },
+        { "type": "png", "name": "IMAGE_0_W", "file": "images/white/0.png" },
+        { "type": "png", "name": "IMAGE_1_W", "file": "images/white/1.png" },
+        { "type": "png", "name": "IMAGE_2_W", "file": "images/white/2.png" },
+        { "type": "png", "name": "IMAGE_3_W", "file": "images/white/3.png" },
+        { "type": "png", "name": "IMAGE_4_W", "file": "images/white/4.png" },
+        { "type": "png", "name": "IMAGE_5_W", "file": "images/white/5.png" },
+        { "type": "png", "name": "IMAGE_6_W", "file": "images/white/6.png" },
+        { "type": "png", "name": "IMAGE_7_W", "file": "images/white/7.png" },
+        { "type": "png", "name": "IMAGE_8_W", "file": "images/white/8.png" },
+        { "type": "png", "name": "IMAGE_9_W", "file": "images/white/9.png" }
+      ]
+    }
+  }
+}
