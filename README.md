@@ -2,6 +2,8 @@
 
 This is a sample watch face for a Pebble, written in C.  There's also an earlier [Javascript version](https://github.com/duhrer/pebble-vertin-js).
 
+You can read about the rationale for this and the technical challenges [on my blog](https://duhrer.github.io/2025-02-11-pebble-watch-frame-buffer/).
+
 ## Requirements
 
 You need a working development environment, and this is not trivial, as the SDK
@@ -22,5 +24,3 @@ Assuming a working environment, you should be able to run `pebble build` and
 `pebble install` from the root of the repository.
 
 ![Screenshot from the emulator](./screenshot.png)
-
-The C graphics libraries offer many more options for drawing a watch face in layers, but sadly don't offer drawing within a clipping path.  So, the numbers don't invert properly, but instead change colour when the second hand is more than halfway through them.
