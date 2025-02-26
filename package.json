@@ -22,26 +22,12 @@
     "messageKeys": [],
     "resources": {
       "media": [
-        { "type": "png", "name": "IMAGE_0_B", "file": "images/black/0.png" },
-        { "type": "png", "name": "IMAGE_1_B", "file": "images/black/1.png" },
-        { "type": "png", "name": "IMAGE_2_B", "file": "images/black/2.png" },
-        { "type": "png", "name": "IMAGE_3_B", "file": "images/black/3.png" },
-        { "type": "png", "name": "IMAGE_4_B", "file": "images/black/4.png" },
-        { "type": "png", "name": "IMAGE_5_B", "file": "images/black/5.png" },
-        { "type": "png", "name": "IMAGE_6_B", "file": "images/black/6.png" },
-        { "type": "png", "name": "IMAGE_7_B", "file": "images/black/7.png" },
-        { "type": "png", "name": "IMAGE_8_B", "file": "images/black/8.png" },
-        { "type": "png", "name": "IMAGE_9_B", "file": "images/black/9.png" },
-        { "type": "png", "name": "IMAGE_0_W", "file": "images/white/0.png" },
-        { "type": "png", "name": "IMAGE_1_W", "file": "images/white/1.png" },
-        { "type": "png", "name": "IMAGE_2_W", "file": "images/white/2.png" },
-        { "type": "png", "name": "IMAGE_3_W", "file": "images/white/3.png" },
-        { "type": "png", "name": "IMAGE_4_W", "file": "images/white/4.png" },
-        { "type": "png", "name": "IMAGE_5_W", "file": "images/white/5.png" },
-        { "type": "png", "name": "IMAGE_6_W", "file": "images/white/6.png" },
-        { "type": "png", "name": "IMAGE_7_W", "file": "images/white/7.png" },
-        { "type": "png", "name": "IMAGE_8_W", "file": "images/white/8.png" },
-        { "type": "png", "name": "IMAGE_9_W", "file": "images/white/9.png" }
+        {
+          "type": "font",
+          "name": "FONT_DEJA_VU_SANS_60",
+          "file": "fonts/DejaVuSansMono-Bold.ttf",
+          "characterRegex": "[0-9]"
+        }
       ]
     }
   }

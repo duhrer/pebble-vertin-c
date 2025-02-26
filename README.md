@@ -24,3 +24,7 @@ Assuming a working environment, you should be able to run `pebble build` and
 `pebble install` from the root of the repository.
 
 ![Screenshot from the emulator](./screenshot.png)
+
+## Credits
+
+This watch face makes use of the free [Deja Vu font](https://dejavu-fonts.github.io/).

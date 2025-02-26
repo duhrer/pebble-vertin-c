@@ -2,48 +2,46 @@
 
 static Window *s_window;
 
-// Array and resource handling were easier because I found this example:
-//
-// https://github.com/pebble/pebble-sdk-examples/blob/master/watchfaces/ninety_one_dub/src/ninety_one_dub.c
+GFont deja_vu_sans_font;
 
-static const int BLACK_BITMAP_RESOURCE_IDS[] = {
-  RESOURCE_ID_IMAGE_0_B,
-  RESOURCE_ID_IMAGE_1_B,
-  RESOURCE_ID_IMAGE_2_B,
-  RESOURCE_ID_IMAGE_3_B,
-  RESOURCE_ID_IMAGE_4_B,
-  RESOURCE_ID_IMAGE_5_B,
-  RESOURCE_ID_IMAGE_6_B,
-  RESOURCE_ID_IMAGE_7_B,
-  RESOURCE_ID_IMAGE_8_B,
-  RESOURCE_ID_IMAGE_9_B
-};
-
-static const int WHITE_BITMAP_RESOURCE_IDS[] = {
-  RESOURCE_ID_IMAGE_0_W,
-  RESOURCE_ID_IMAGE_1_W,
-  RESOURCE_ID_IMAGE_2_W,
-  RESOURCE_ID_IMAGE_3_W,
-  RESOURCE_ID_IMAGE_4_W,
-  RESOURCE_ID_IMAGE_5_W,
-  RESOURCE_ID_IMAGE_6_W,
-  RESOURCE_ID_IMAGE_7_W,
-  RESOURCE_ID_IMAGE_8_W,
-  RESOURCE_ID_IMAGE_9_W
-};
-
-static GBitmap *black_bitmaps[10];
-static GBitmap *white_bitmaps[10];
-
+static Layer *background_layer;
+static TextLayer *hour_layer;
+static TextLayer *minute_layer;
 static Layer *cutpie_layer;
-static Layer *text_layer;
 
-static void text_tick_handler(struct tm *tick_time, TimeUnits units_changed) {
-  layer_mark_dirty(cutpie_layer);
+static GColor positiveColor;
+static GColor negativeColor;
+
+// TODO: Add icon image.
+
+static void update_time() {
+  time_t temp = time(NULL);
+  struct tm *tick_time = localtime(&temp);
+
+  GColor text_color = tick_time->tm_min % 2 ? positiveColor : negativeColor;
+
+  text_layer_set_text_color(hour_layer, text_color);
+
+  static char hour_buffer[3];
+  snprintf(hour_buffer, sizeof(hour_buffer), "%02d", tick_time->tm_hour);
+  text_layer_set_text(hour_layer, hour_buffer);
+
+  text_layer_set_text_color(minute_layer, text_color);
+
+  static char minute_buffer[3];
+  snprintf(minute_buffer, sizeof(minute_buffer), "%02d", tick_time->tm_min);
+  text_layer_set_text(minute_layer, minute_buffer);
 }
 
-static void cutpie_tick_handler(struct tm *tick_time, TimeUnits units_changed) {
-  layer_mark_dirty(cutpie_layer);
+static void combined_tick_handler(struct tm *tick_time, TimeUnits units_changed) {
+
+  if (tick_time->tm_sec) {
+    layer_mark_dirty(cutpie_layer);
+    layer_mark_dirty(background_layer);
+  }
+  else {
+    update_time();
+  }
 }
 
 static int get_quadrant(int x, int y, int width, int height ) {
@@ -224,78 +222,81 @@ static void update_pie(Layer *layer, GContext *ctx) {
   }
 }
 
-// TODO: Convert this to a text layer that can draw the text in other colours.
-static void update_text(Layer *layer, GContext *ctx) {
-  GRect layer_bounds = layer_get_bounds(layer);
-
+static void update_background(Layer *layer, GContext *ctx) {
   time_t now = time(NULL);
-  // https://cplusplus.com/reference/ctime/tm/
-  struct tm *t = localtime(&now);
+  struct tm *tick_time = localtime(&now);
 
-  int hour_ones_digit = (t->tm_hour) % 10;
-  int hour_tens_digit = ((t->tm_hour) - hour_ones_digit) / 10;
-  int minute_ones_digit = (t->tm_min) % 10;
-  int minute_tens_digit = ((t->tm_min) - minute_ones_digit) / 10;
-  
-  GBitmap **text_bitmaps = t->tm_min % 2 ? white_bitmaps : black_bitmaps;
+  GColor background_color = tick_time->tm_min % 2 ? negativeColor : positiveColor;
 
-  GColor background_color = t->tm_min % 2 ? GColorBlack : GColorWhite;
-
+  GRect bounds = layer_get_bounds(layer);
   graphics_context_set_fill_color(ctx, background_color);
-  graphics_fill_rect(ctx, layer_bounds, 0, GCornerNone);
-
-  // q1: 0-15, q2: 15-30, q3: 30-45, q4: 45-60
-  GRect q1_bounds = GRect(layer_bounds.size.w/2, 0, layer_bounds.size.w/2, layer_bounds.size.h/2);
-  GRect q2_bounds = GRect(layer_bounds.size.w/2, layer_bounds.size.h/2, layer_bounds.size.w/2, layer_bounds.size.h/2);
-  GRect q3_bounds = GRect(0, layer_bounds.size.h/2, layer_bounds.size.w/2, layer_bounds.size.h/2);
-  GRect q4_bounds = GRect(0, 0, layer_bounds.size.w/2, layer_bounds.size.h/2);
-
-  graphics_context_set_compositing_mode(ctx, GCompOpSet);
-
-  graphics_draw_bitmap_in_rect(ctx, text_bitmaps[hour_ones_digit],   q1_bounds);
-  graphics_draw_bitmap_in_rect(ctx, text_bitmaps[minute_ones_digit], q2_bounds);
-  graphics_draw_bitmap_in_rect(ctx, text_bitmaps[minute_tens_digit], q3_bounds);
-  graphics_draw_bitmap_in_rect(ctx, text_bitmaps[hour_tens_digit],   q4_bounds);
+  graphics_fill_rect(ctx, bounds, 0, GCornerNone);
 }
 
-// TODO: Find button handling example and add controls for the colour mode.
+
+// TODO: Add controls for the colour mode.
 
 static void main_window_load(Window *window) {
-  window_set_background_color(window, GColorBlack);
+  window_set_background_color(window, negativeColor);
 
   Layer *window_layer = window_get_root_layer(window);
   GRect bounds = layer_get_bounds(window_layer);
 
-  text_layer = layer_create(bounds);
-  layer_set_update_proc(text_layer, update_text);
-  layer_add_child(window_layer, text_layer);
+  background_layer = layer_create(bounds);
+
+  layer_set_update_proc(background_layer, update_background);
+  layer_add_child(window_layer, background_layer);
+
+  hour_layer = text_layer_create(GRect(0, (bounds.size.h/2) - 60, bounds.size.w, bounds.size.h/2));
+  text_layer_set_font(hour_layer, deja_vu_sans_font);
+  text_layer_set_background_color(hour_layer, GColorClear);
+  text_layer_set_text_color(hour_layer, GColorClear);
+  text_layer_set_text(hour_layer, "01");
+  text_layer_set_text_alignment(hour_layer, GTextAlignmentCenter);
+
+  layer_add_child(window_layer, text_layer_get_layer(hour_layer));
+
+  minute_layer = text_layer_create(GRect(0, bounds.size.h/2, bounds.size.w, bounds.size.h/2));
+  text_layer_set_font(minute_layer, deja_vu_sans_font);
+  text_layer_set_background_color(minute_layer, GColorClear);
+  text_layer_set_text_color(minute_layer, GColorClear);
+  text_layer_set_text(minute_layer, "23");
+  text_layer_set_font(minute_layer, deja_vu_sans_font);
+  text_layer_set_text_alignment(minute_layer, GTextAlignmentCenter);
+
+  layer_add_child(window_layer, text_layer_get_layer(minute_layer));
 
   cutpie_layer = layer_create(bounds);
 
   layer_set_update_proc(cutpie_layer, update_pie);
   layer_add_child(window_layer, cutpie_layer);
 
-  layer_mark_dirty(text_layer);
+  layer_mark_dirty(background_layer);
+  update_time();
   layer_mark_dirty(cutpie_layer);
 
-  tick_timer_service_subscribe(MINUTE_UNIT, text_tick_handler);
-  tick_timer_service_subscribe(SECOND_UNIT, cutpie_tick_handler);
+  tick_timer_service_subscribe(SECOND_UNIT, combined_tick_handler);
 }
 
 static void main_window_unload(Window *window) {
   layer_destroy(cutpie_layer);
-  layer_destroy(text_layer);
+  text_layer_destroy(hour_layer);
+  text_layer_destroy(minute_layer);
+  layer_destroy(background_layer);
 }
 
 static void init(void) {
-  memset(&black_bitmaps, 0, sizeof(black_bitmaps));
-  memset(&white_bitmaps, 0, sizeof(white_bitmaps));
+  // TODO: Load this from settings.  Also need a reload button.
+  #if defined(PBL_COLOR)
+  positiveColor = GColorBlue;
+  negativeColor = GColorYellow;
+  #else
+  positiveColor = GColorWhite;
+  negativeColor = GColorBlack;
+  #endif
 
-  for (int a = 0; a < 10; a++) {
-    black_bitmaps[a] = gbitmap_create_with_resource(BLACK_BITMAP_RESOURCE_IDS[a]);
-    white_bitmaps[a] = gbitmap_create_with_resource(WHITE_BITMAP_RESOURCE_IDS[a]);
-  }
- 
+  deja_vu_sans_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DEJA_VU_SANS_60));
+
   s_window = window_create();
   window_set_window_handlers(s_window, (WindowHandlers) {
     .load = main_window_load,
@@ -309,10 +310,7 @@ static void init(void) {
 static void deinit(void) {
   window_destroy(s_window);
 
-  for (int a=0; a<10; a++) {
-    gbitmap_destroy(black_bitmaps[a]);
-    gbitmap_destroy(white_bitmaps[a]);
-  }
+  fonts_unload_custom_font(deja_vu_sans_font);
 }
 
 int main(void) {
