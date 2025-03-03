@@ -1,0 +1,76 @@
+[
+    {
+        "type": "heading",
+        "defaultValue": "Vertin Settings"
+    },
+    {
+        "type": "section",
+        "items": [
+            {
+                "type": "heading",
+                "defaultValue": "Colours"
+            },
+            {
+                "type": "color",
+                "messageKey": "PrimaryColour",
+                "defaultValue": "0x0000FF",
+                "label": "Primary"
+            },
+            {
+                "type": "color",
+                "messageKey": "SecondaryColour",
+                "defaultValue": "0xFFFFFF",
+                "label": "Secondary"
+            }
+        ]
+    },
+    {
+        "type": "section",
+        "items": [
+            {
+                "type": "heading",
+                "defaultValue": "Night Mode"
+            },
+            {
+                "type": "toggle",
+                "messageKey": "EnableNightMode",
+                "label": "Enable Night Mode",
+                "defaultValue": false
+            },
+            {
+                "type": "color",
+                "messageKey": "PrimaryNightColour",
+                "defaultValue": "0x333333",
+                "label": "Primary Colour"
+            },
+            {
+                "type": "color",
+                "messageKey": "SecondaryNightColour",
+                "defaultValue": "0x000000",
+                "label": "Secondary Colour"
+            },
+            {
+                "type": "input",
+                "messageKey": "NightStart",
+                "defaultValue": "22:00",
+                "label": "Start Time",
+                "attributes": {
+                    "type": "time"
+                }
+            },
+            {
+                "type": "input",
+                "messageKey": "NightEnd",
+                "defaultValue": "06:00",
+                "label": "End Time",
+                "attributes": {
+                  "type": "time"
+                }
+            }
+        ]
+    },
+    {
+        "type": "submit",
+        "defaultValue": "Save Settings"
+    }
+]
