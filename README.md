@@ -6,7 +6,7 @@ This is a sample watch face for a Pebble, written in C.  There's also an earlier
 [Javascript version](https://github.com/duhrer/pebble-vertin-js).
 
 You can read about the rationale for this and the technical challenges [on my
-blog](https://duhrer.github.io/22025-02-28-pebble-watch-face-configurable-colours/).
+blog](https://duhrer.github.io/2025-02-28-pebble-watch-face-configurable-colours/).
 
 ## Requirements
 
