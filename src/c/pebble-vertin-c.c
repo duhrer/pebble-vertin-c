@@ -176,7 +176,7 @@ static void update_pie(Layer *layer, GContext *ctx) {
   int seconds = t->tm_sec;
 
   if (seconds) {
-    GRect bounds = layer_get_bounds(layer);
+    GRect bounds = layer_get_unobstructed_bounds(layer);
     GBitmap *fb = graphics_capture_frame_buffer(ctx);
 
     // TODO: Check available height and recentre to available-(full/2).
@@ -252,7 +252,7 @@ static void update_pie(Layer *layer, GContext *ctx) {
 }
 
 static void update_text(Layer *layer, GContext *ctx) {
-  GRect layer_bounds = layer_get_bounds(layer);
+  GRect layer_bounds = layer_get_unobstructed_bounds(layer);
 
   time_t now = time(NULL);
   // https://cplusplus.com/reference/ctime/tm/
@@ -268,37 +268,44 @@ static void update_text(Layer *layer, GContext *ctx) {
   graphics_context_set_fill_color(ctx, CurrentColourScheme.SecondaryColour);
   graphics_fill_rect(ctx, layer_bounds, 0, GCornerNone);
 
-  // TODO: Check available height and recentre to available-(full/2).
-
   // q1: 0-15, q2: 15-30, q3: 30-45, q4: 45-60
-  GRect q1_bounds = GRect(layer_bounds.size.w/2, 0, layer_bounds.size.w/2, layer_bounds.size.h/2);
-  GRect q2_bounds = GRect(layer_bounds.size.w/2, layer_bounds.size.h/2, layer_bounds.size.w/2, layer_bounds.size.h/2);
-  GRect q3_bounds = GRect(0, layer_bounds.size.h/2, layer_bounds.size.w/2, layer_bounds.size.h/2);
-  GRect q4_bounds = GRect(0, 0, layer_bounds.size.w/2, layer_bounds.size.h/2);
+  //
+  //  q4 | q1
+  // ---------
+  //  q3 | q
+  GBitmap *q1_bitmap = bitmaps[hour_ones_digit];
+  GRect q1_bitmap_bounds = gbitmap_get_bounds(q1_bitmap);
+  GRect q1_bounds = GRect(layer_bounds.size.w/2, 0, layer_bounds.size.w/2 + q1_bitmap_bounds.size.w, 0 + q1_bitmap_bounds.size.h);
+
+  GBitmap *q2_bitmap = bitmaps[minute_ones_digit];
+  GRect q2_bitmap_bounds = gbitmap_get_bounds(q2_bitmap);
+  GRect q2_bounds = GRect(layer_bounds.size.w/2, layer_bounds.size.h/2, layer_bounds.size.w/2 + q2_bitmap_bounds.size.w, layer_bounds.size.h/2 + q2_bitmap_bounds.size.h);
+
+  GBitmap *q3_bitmap = bitmaps[minute_tens_digit];
+  GRect q3_bitmap_bounds = gbitmap_get_bounds(q3_bitmap);
+  GRect q3_bounds = GRect(0, layer_bounds.size.h/2, q3_bitmap_bounds.size.w, layer_bounds.size.h/2);
+
+  GBitmap *q4_bitmap = bitmaps[hour_tens_digit];
+  GRect q4_bitmap_bounds = gbitmap_get_bounds(q4_bitmap);
+  GRect q4_bounds = GRect(0, 0, q4_bitmap_bounds.size.w, q4_bitmap_bounds.size.h);
 
   graphics_context_set_compositing_mode(ctx, GCompOpSet);
 
-  GBitmap *q1_bitmap = bitmaps[hour_ones_digit];
   GColor *palette = gbitmap_get_palette(q1_bitmap);
   palette[0] = CurrentColourScheme.PrimaryColour;
   palette[1] = CurrentColourScheme.SecondaryColour;
 
   graphics_draw_bitmap_in_rect(ctx, q1_bitmap, q1_bounds);
 
-  GBitmap *q2_bitmap = bitmaps[minute_ones_digit];
   gbitmap_set_palette(q2_bitmap, palette, false);
   graphics_draw_bitmap_in_rect(ctx, q2_bitmap, q2_bounds);
 
-  GBitmap *q3_bitmap = bitmaps[minute_tens_digit];
   gbitmap_set_palette(q3_bitmap, palette, false);
   graphics_draw_bitmap_in_rect(ctx, q3_bitmap, q3_bounds);
 
-  GBitmap *q4_bitmap = bitmaps[hour_tens_digit];
   gbitmap_set_palette(q4_bitmap, palette, false);
   graphics_draw_bitmap_in_rect(ctx, q4_bitmap, q4_bounds);
 }
-
-// TODO: Find button handling example and add controls for the colour mode.
 
 static void main_window_load(Window *window) {
   window_set_background_color(window, GColorBlack);
