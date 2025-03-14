@@ -2,14 +2,14 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="72"
-   height="84"
-   viewBox="0 0 72.000002 84.000003"
+   width="47.511051"
+   height="68.580688"
+   viewBox="0 0 47.511052 68.580691"
    version="1.1"
    id="svg1"
    inkscape:version="1.4 (e7c3feb100, 2024-10-09)"
-   sodipodi:docname="4.svg"
-   inkscape:export-filename="5.png"
+   sodipodi:docname="7.svg"
+   inkscape:export-filename="8.png"
    inkscape:export-xdpi="96"
    inkscape:export-ydpi="96"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
@@ -23,12 +23,12 @@
      borderopacity="1"
      inkscape:showpageshadow="0"
      inkscape:pageopacity="1"
-     inkscape:pagecheckerboard="0"
+     inkscape:pagecheckerboard="true"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
      inkscape:zoom="2.0812827"
-     inkscape:cx="397.59135"
-     inkscape:cy="61.500535"
+     inkscape:cx="385.57953"
+     inkscape:cy="53.812968"
      inkscape:window-width="2752"
      inkscape:window-height="1086"
      inkscape:window-x="0"
@@ -40,17 +40,12 @@
   <g
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
-     id="layer1">
-    <text
-       xml:space="preserve"
-       style="font-size:80.958px;font-family:'Source Code Pro';-inkscape-font-specification:'Source Code Pro';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:none;stroke:#000000;stroke-width:9.56199;stroke-linecap:round"
-       x="10.384384"
-       y="71.509354"
-       id="text1"><tspan
-         sodipodi:role="line"
-         id="tspan1"
-         x="10.384384"
-         y="71.509354"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans';stroke-width:9.56199">4</tspan></text>
+     id="layer1"
+     transform="translate(-12.244475,-7.7096604)">
+    <path
+       style="font-size:80.958px;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans';fill:none;stroke:#000000;stroke-width:9.56199;stroke-linecap:round"
+       d="m 17.02547,12.490655 h 37.949063 v 3.399604 L 33.549124,71.509354 H 25.208237 L 45.368676,19.210802 H 17.02547 Z"
+       id="text1"
+       aria-label="7" />
   </g>
 </svg>

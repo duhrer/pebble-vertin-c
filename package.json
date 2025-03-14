@@ -16,7 +16,6 @@
     "sdkVersion": "3",
     "enableMultiJS": true,
     "targetPlatforms": [
-      "aplite",
       "basalt",
       "chalk",
       "diorite"
@@ -42,54 +41,54 @@
           "file": "images/menu_icon.png"
         },
         {
-          "type": "png",
-          "name": "IMAGE_0",
-          "file": "images/1bit/0.png"
+          "type": "raw",
+          "name": "DIGIT_0",
+          "file": "images/pdc/0.pdc"
         },
         {
-          "type": "png",
-          "name": "IMAGE_1",
-          "file": "images/1bit/1.png"
+          "type": "raw",
+          "name": "DIGIT_1",
+          "file": "images/pdc/1.pdc"
         },
         {
-          "type": "png",
-          "name": "IMAGE_2",
-          "file": "images/1bit/2.png"
+          "type": "raw",
+          "name": "DIGIT_2",
+          "file": "images/pdc/2.pdc"
         },
         {
-          "type": "png",
-          "name": "IMAGE_3",
-          "file": "images/1bit/3.png"
+          "type": "raw",
+          "name": "DIGIT_3",
+          "file": "images/pdc/3.pdc"
         },
         {
-          "type": "png",
-          "name": "IMAGE_4",
-          "file": "images/1bit/4.png"
+          "type": "raw",
+          "name": "DIGIT_4",
+          "file": "images/pdc/4.pdc"
         },
         {
-          "type": "png",
-          "name": "IMAGE_5",
-          "file": "images/1bit/5.png"
+          "type": "raw",
+          "name": "DIGIT_5",
+          "file": "images/pdc/5.pdc"
         },
         {
-          "type": "png",
-          "name": "IMAGE_6",
-          "file": "images/1bit/6.png"
+          "type": "raw",
+          "name": "DIGIT_6",
+          "file": "images/pdc/6.pdc"
         },
         {
-          "type": "png",
-          "name": "IMAGE_7",
-          "file": "images/1bit/7.png"
+          "type": "raw",
+          "name": "DIGIT_7",
+          "file": "images/pdc/7.pdc"
         },
         {
-          "type": "png",
-          "name": "IMAGE_8",
-          "file": "images/1bit/8.png"
+          "type": "raw",
+          "name": "DIGIT_8",
+          "file": "images/pdc/8.pdc"
         },
         {
-          "type": "png",
-          "name": "IMAGE_9",
-          "file": "images/1bit/9.png"
+          "type": "raw",
+          "name": "DIGIT_9",
+          "file": "images/pdc/9.pdc"
         }
       ]
     }

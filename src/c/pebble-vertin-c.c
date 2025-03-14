@@ -6,20 +6,20 @@ static Window *s_window;
 //
 // https://github.com/pebble/pebble-sdk-examples/blob/master/watchfaces/ninety_one_dub/src/ninety_one_dub.c
 
-static const int BITMAP_RESOURCE_IDS[] = {
-  RESOURCE_ID_IMAGE_0,
-  RESOURCE_ID_IMAGE_1,
-  RESOURCE_ID_IMAGE_2,
-  RESOURCE_ID_IMAGE_3,
-  RESOURCE_ID_IMAGE_4,
-  RESOURCE_ID_IMAGE_5,
-  RESOURCE_ID_IMAGE_6,
-  RESOURCE_ID_IMAGE_7,
-  RESOURCE_ID_IMAGE_8,
-  RESOURCE_ID_IMAGE_9
+static const int DIGIT_PATH_RESOURCE_IDS[] = {
+  RESOURCE_ID_DIGIT_0,
+  RESOURCE_ID_DIGIT_1,
+  RESOURCE_ID_DIGIT_2,
+  RESOURCE_ID_DIGIT_3,
+  RESOURCE_ID_DIGIT_4,
+  RESOURCE_ID_DIGIT_5,
+  RESOURCE_ID_DIGIT_6,
+  RESOURCE_ID_DIGIT_7,
+  RESOURCE_ID_DIGIT_8,
+  RESOURCE_ID_DIGIT_9
 };
 
-static GBitmap *bitmaps[10];
+static GDrawCommandImage *digit_paths[10];
 
 #define SETTINGS_KEY 1
 
@@ -251,11 +251,36 @@ static void update_pie(Layer *layer, GContext *ctx) {
   }
 }
 
+typedef struct {
+  ColourScheme colourScheme;
+} ColourSchemeContext;
+
+static bool update_single_command_stroke_colour(GDrawCommand *command, uint32_t index, void *context) {
+  ColourSchemeContext *colours = context;
+  gdraw_command_set_stroke_color(command, colours->colourScheme.PrimaryColour);
+
+  return true;
+}
+
+static void update_image_colours(struct tm *t) {
+  ColourScheme CurrentColourScheme = get_current_colour_scheme(t);
+
+  ColourSchemeContext context = {
+    .colourScheme = CurrentColourScheme
+  };
+
+  for (int a = 0; a < 10; a++) {
+    GDrawCommandImage *image = digit_paths[a];
+    GDrawCommandList *command_list = gdraw_command_image_get_command_list(image);
+
+    gdraw_command_list_iterate(command_list, update_single_command_stroke_colour, &context);
+  }
+}
+
 static void update_text(Layer *layer, GContext *ctx) {
   GRect layer_bounds = layer_get_unobstructed_bounds(layer);
 
   time_t now = time(NULL);
-  // https://cplusplus.com/reference/ctime/tm/
   struct tm *t = localtime(&now);
 
   int hour_ones_digit = (t->tm_hour) % 10;
@@ -265,6 +290,8 @@ static void update_text(Layer *layer, GContext *ctx) {
 
   ColourScheme CurrentColourScheme = get_current_colour_scheme(t);
 
+  update_image_colours(t);
+
   graphics_context_set_fill_color(ctx, CurrentColourScheme.SecondaryColour);
   graphics_fill_rect(ctx, layer_bounds, 0, GCornerNone);
 
@@ -272,39 +299,75 @@ static void update_text(Layer *layer, GContext *ctx) {
   //
   //  q4 | q1
   // ---------
-  //  q3 | q
-  GBitmap *q1_bitmap = bitmaps[hour_ones_digit];
-  GRect q1_bitmap_bounds = gbitmap_get_bounds(q1_bitmap);
-  GRect q1_bounds = GRect(layer_bounds.size.w/2, 0, layer_bounds.size.w/2 + q1_bitmap_bounds.size.w, 0 + q1_bitmap_bounds.size.h);
+  //  q3 | q2
+  //
 
-  GBitmap *q2_bitmap = bitmaps[minute_ones_digit];
-  GRect q2_bitmap_bounds = gbitmap_get_bounds(q2_bitmap);
-  GRect q2_bounds = GRect(layer_bounds.size.w/2, layer_bounds.size.h/2, layer_bounds.size.w/2 + q2_bitmap_bounds.size.w, layer_bounds.size.h/2 + q2_bitmap_bounds.size.h);
+  // TODO: Adjust origins for round watch faces.
 
-  GBitmap *q3_bitmap = bitmaps[minute_tens_digit];
-  GRect q3_bitmap_bounds = gbitmap_get_bounds(q3_bitmap);
-  GRect q3_bounds = GRect(0, layer_bounds.size.h/2, q3_bitmap_bounds.size.w, layer_bounds.size.h/2);
+  GDrawCommandImage *q1_image = digit_paths[hour_ones_digit];
+  GSize q1_image_size = gdraw_command_image_get_bounds_size(q1_image);
+  int q1_margin_x = ((layer_bounds.size.w/2) - q1_image_size.w) / 2;
+  int q1_margin_y = ((layer_bounds.size.h/2) - q1_image_size.h) / 2;
+  int q1_x = (layer_bounds.size.w/2) + q1_margin_x;
+  #ifdef PBL_ROUND
+  q1_x -= 15;
+  #endif
+  int q1_y = q1_margin_y;
+  #ifdef PBL_ROUND
+  q1_y += 8;
+  #endif
 
-  GBitmap *q4_bitmap = bitmaps[hour_tens_digit];
-  GRect q4_bitmap_bounds = gbitmap_get_bounds(q4_bitmap);
-  GRect q4_bounds = GRect(0, 0, q4_bitmap_bounds.size.w, q4_bitmap_bounds.size.h);
+  GPoint q1_origin = GPoint(q1_x, q1_y);
 
-  graphics_context_set_compositing_mode(ctx, GCompOpSet);
+  GDrawCommandImage *q2_image = digit_paths[minute_ones_digit];
+  GSize q2_image_size = gdraw_command_image_get_bounds_size(q2_image);
+  int q2_margin_x = ((layer_bounds.size.w/2) - q2_image_size.w) / 2;
+  int q2_margin_y = ((layer_bounds.size.h/2) - q2_image_size.h) / 2;
+  int q2_x = (layer_bounds.size.w/2) + q2_margin_x;
+  #ifdef PBL_ROUND
+  q2_x -= 15;
+  #endif
+  int q2_y = (layer_bounds.size.h/2) + q2_margin_y;
+  #ifdef PBL_ROUND
+  q2_y -= 8;
+  #endif
+  GPoint q2_origin = GPoint(q2_x, q2_y);
 
-  GColor *palette = gbitmap_get_palette(q1_bitmap);
-  palette[0] = CurrentColourScheme.PrimaryColour;
-  palette[1] = CurrentColourScheme.SecondaryColour;
+  GDrawCommandImage *q3_image = digit_paths[minute_tens_digit];
+  GSize q3_image_size = gdraw_command_image_get_bounds_size(q3_image);
+  int q3_margin_x = ((layer_bounds.size.w/2) - q3_image_size.w) / 2;
+  int q3_margin_y = ((layer_bounds.size.h/2) - q3_image_size.h) / 2;
+  int q3_x = q3_margin_x;
+  #ifdef PBL_ROUND
+  q3_x += 15;
+  #endif
+  int q3_y = (layer_bounds.size.h/2) + q3_margin_y;
+  #ifdef PBL_ROUND
+  q3_y -= 8;
+  #endif
+  GPoint q3_origin = GPoint(q3_x, q3_y);
 
-  graphics_draw_bitmap_in_rect(ctx, q1_bitmap, q1_bounds);
+  GDrawCommandImage *q4_image = digit_paths[hour_tens_digit];
+  GSize q4_image_size = gdraw_command_image_get_bounds_size(q4_image);
+  int q4_margin_x = ((layer_bounds.size.w/2) - q4_image_size.w) / 2;
+  int q4_margin_y = ((layer_bounds.size.h/2) - q4_image_size.h) / 2;
+  int q4_x = q4_margin_x;
+  #ifdef PBL_ROUND
+  q4_x += 15;
+  #endif
+  int q4_y = q4_margin_y;
+  #ifdef PBL_ROUND
+  q4_y += 8;
+  #endif
+  GPoint q4_origin = GPoint(q4_x, q4_y);
 
-  gbitmap_set_palette(q2_bitmap, palette, false);
-  graphics_draw_bitmap_in_rect(ctx, q2_bitmap, q2_bounds);
+  // This won't work for GDrawCommandImage objects.
+  // graphics_context_set_fill_color(ctx, CurrentColourScheme.PrimaryColour);
 
-  gbitmap_set_palette(q3_bitmap, palette, false);
-  graphics_draw_bitmap_in_rect(ctx, q3_bitmap, q3_bounds);
-
-  gbitmap_set_palette(q4_bitmap, palette, false);
-  graphics_draw_bitmap_in_rect(ctx, q4_bitmap, q4_bounds);
+  gdraw_command_image_draw(ctx, q1_image, q1_origin);
+  gdraw_command_image_draw(ctx, q2_image, q2_origin);
+  gdraw_command_image_draw(ctx, q3_image, q3_origin);
+  gdraw_command_image_draw(ctx, q4_image, q4_origin);
 }
 
 static void main_window_load(Window *window) {
@@ -439,15 +502,19 @@ static void init(void) {
   // Open AppMessage connection
   app_message_register_inbox_received(inbox_received_handler);
 
-  // TODO: Find out and document why this value is how it is.
+  // TODO: Find out and document why this value is what it is.
   app_message_open(128, 128);
 
-  memset(&bitmaps, 0, sizeof(bitmaps));
+  memset(&digit_paths, 0, sizeof(digit_paths));
 
   for (int a = 0; a < 10; a++) {
-    bitmaps[a] = gbitmap_create_with_resource(BITMAP_RESOURCE_IDS[a]);
+    digit_paths[a] = gdraw_command_image_create_with_resource(DIGIT_PATH_RESOURCE_IDS[a]);
   }
  
+  time_t now = time(NULL);
+  struct tm *t = localtime(&now);
+  update_image_colours(t);
+
   s_window = window_create();
   window_set_window_handlers(s_window, (WindowHandlers) {
     .load = main_window_load,
@@ -461,8 +528,8 @@ static void init(void) {
 static void deinit(void) {
   window_destroy(s_window);
 
-  for (int a=0; a<10; a++) {
-    gbitmap_destroy(bitmaps[a]);
+  for (int a=0; a < 10; a++) {
+    gdraw_command_image_destroy(digit_paths[a]);
   }
 }
 
