@@ -4,8 +4,10 @@
 ![Screenshot from the chalk emulator](./screenshots/chalk.png)
 ![Screenshot from the diorite emulator](./screenshots/diorite.png)
 
-I wrote this watch face as a learning project. I based the look on [a watch face for Google Wear by ustwo](https://ustwo.com/work/android/wear/). If you want to read about the background and technical challenges, check out [my blog]().
-
+I wrote this watch face as a learning project. I based the look on [a watch face
+for Google Wear by ustwo](https://ustwo.com/work/android/wear/). If you want to
+read about the background and technical challenges, check out [my
+blog](https://duhrer.github.io/2025-03-14-revisiting-my-first-pebble-watch-face/).
 
 ## Requirements
 
